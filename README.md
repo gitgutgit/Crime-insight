@@ -1,4 +1,13 @@
+# !!
+
+This project is still in production. (end with November 14th)
+The work in this repository is under a restricted license until November 14th. (Sharing and modification for distribution are not permitted.)
+
 # Introduction
+
+.....
+
+# how to execute the code
 
 ## how to test db on terminal
 
@@ -19,9 +28,3 @@ sqlite3 db.db
 SELECT \* FROM Crime;
 
 5. .exit
-
-# how to execute the code
-
-# !!
-
-The work in this repository is under a restricted license until November 12th. (Sharing and modification for distribution are not permitted.)
