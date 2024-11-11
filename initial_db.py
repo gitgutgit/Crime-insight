@@ -159,4 +159,4 @@ if __name__ == "__main__":
     insert_categorize1(1007,3)
     insert_categorize1(1008,4)
     insert_categorize1(1009,5)
-    #nothing
+    #nothing2
