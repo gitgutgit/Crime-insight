@@ -115,7 +115,18 @@ def insert_category(category_id, category_name):
         print(f"Category with ID {category_id} already exists.")
     conn.commit()
     conn.close()
-
+def insert_categorize1(Crime_id,Category_id):
+    conn = sqlite3.connect(DB_URL)
+    cursor = conn.cursor()
+    #check the category_id is already exist or not
+    cursor.execute('SELECT COUNT(*) FROM Categorize1 WHERE Crime_id = ? AND Category_id = ?', (Crime_id,Category_id))
+    if cursor.fetchone()[0] == 0:
+        cursor.execute('INSERT INTO Categorize1 (Crime_id, Category_id) VALUES (?, ?)', (Crime_id, Category_id))
+        print(f"Category with ID {Category_id} inserted successfully.")
+    else:
+        print(f"Category with ID {Category_id} already exists.")
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     create_database()
@@ -137,3 +148,14 @@ if __name__ == "__main__":
     insert_category(3, 'Burglary')
     insert_category(4, 'Vandalism')
     insert_category(5, 'Drug Possession')
+    #insert_categorize1
+    insert_categorize1(1000,1)
+    insert_categorize1(1001,2)
+    insert_categorize1(1002,3)
+    insert_categorize1(1003,4)
+    insert_categorize1(1004,5)
+    insert_categorize1(1005,1)
+    insert_categorize1(1006,2)
+    insert_categorize1(1007,3)
+    insert_categorize1(1008,4)
+    insert_categorize1(1009,5)
