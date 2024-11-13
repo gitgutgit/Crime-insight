@@ -8,7 +8,7 @@ from flask import Flask, render_template, request
 # Load database configuration from secrets.toml
 config = toml.load("secrets.toml")
 DB_URL = config["database"]["DB_URL"]
-FOLDER_NAME = "templates"  # 템플릿 폴더 이름
+FOLDER_NAME = "templates"  # template folder name
 
 # Set up Flask application with specified template folder
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), FOLDER_NAME)
@@ -50,36 +50,65 @@ def offender_info():
     # Search by criminal name
     if search_type == "criminal_name":
         query = """
-        SELECT c.Crime_id, c.Crime_date, cr.Criminal_name, p.state, cat.Category_name
-        FROM Crime c
-        JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
-        JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
-        JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
-        JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
-        JOIN Category cat ON cat1.Category_id = cat.Category_id
-        WHERE cr.Criminal_name = %s;
-    """
+            SELECT c.Crime_id, c.Crime_date, cr.Criminal_id, cr.Criminal_name, p.state, cat.Category_name
+            FROM Crime c
+            JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
+            JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
+            JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
+            JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
+            JOIN Category cat ON cat1.Category_id = cat.Category_id
+            WHERE cr.Criminal_name = %s;
+        """
         cursor.execute(query, (search_value,))
-        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_name': row[2], 'State': row[3],'Category': row[4]} for row in cursor.fetchall()]
+        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_id': row[2], 'Criminal_name': row[3], 'State': row[4], 'Category': row[5]} for row in cursor.fetchall()]
 
     # Search by crime ID
     elif search_type == "crime_id":
         query = """
-        SELECT c.Crime_id, c.Crime_date, cr.Criminal_name, p.state, cat.Category_name
-        FROM Crime c
-        JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
-        JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
-        JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
-        JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
-        JOIN Category cat ON cat1.Category_id = cat.Category_id
-        WHERE c.Crime_id = %s;
+            SELECT c.Crime_id, c.Crime_date, cr.Criminal_id, cr.Criminal_name, p.state, cat.Category_name
+            FROM Crime c
+            JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
+            JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
+            JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
+            JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
+            JOIN Category cat ON cat1.Category_id = cat.Category_id
+            WHERE c.Crime_id = %s;
         """
         cursor.execute(query, (search_value,))
-        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_name': row[2], 'State': row[3], 'Category': row[4]} for row in cursor.fetchall()]
-    # do diffrent way to show the  Categorize2!
+        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_id': row[2], 'Criminal_name': row[3], 'State': row[4], 'Category': row[5]} for row in cursor.fetchall()]
+
+    # Search by specific date
+    elif search_type == "specific_date":
+        query = """
+            SELECT c.Crime_id, c.Crime_date, cr.Criminal_id, cr.Criminal_name, p.state, cat.Category_name
+            FROM Crime c
+            JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
+            JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
+            JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
+            JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
+            JOIN Category cat ON cat1.Category_id = cat.Category_id
+            WHERE c.Crime_date = %s;
+        """
+        cursor.execute(query, (search_value,))
+        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_id': row[2], 'Criminal_name': row[3], 'State': row[4], 'Category': row[5]} for row in cursor.fetchall()]
+
+    # Search by state
+    elif search_type == "state":
+        query = """
+            SELECT c.Crime_id, c.Crime_date, cr.Criminal_id, cr.Criminal_name, p.state, cat.Category_name
+            FROM Crime c
+            JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
+            JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
+            JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
+            JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
+            JOIN Category cat ON cat1.Category_id = cat.Category_id
+            WHERE p.state = %s;
+        """
+        cursor.execute(query, (search_value,))
+        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_id': row[2], 'Criminal_name': row[3], 'State': row[4], 'Category': row[5]} for row in cursor.fetchall()]
     elif search_type == "category":
         query = """
-        SELECT c.Crime_id, c.Crime_date, cr.Criminal_name, p.state, cat.Category_name
+        SELECT c.Crime_id, c.Crime_date, cr.Criminal_id, cr.Criminal_name, p.state, cat.Category_name
         FROM Crime c
         JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
         JOIN Category cat ON cat1.Category_id = cat.Category_id
@@ -89,41 +118,13 @@ def offender_info():
         WHERE cat.Category_name = %s;
         """
         cursor.execute(query, (search_value,))
-        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_name': row[2], 'State': row[3],'Category': row[4]} for row in cursor.fetchall()]
+        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_id': row[2], 'Criminal_name': row[3], 'State': row[4], 'Category': row[5]} for row in cursor.fetchall()]
 
-    # Search by specific date
-    elif search_type == "specific_date":
-        query = """
-        SELECT c.Crime_id, c.Crime_date, cr.Criminal_name, p.state, cat.Category_name
-        FROM Crime c
-        JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
-        JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
-        JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
-        JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
-        JOIN Category cat ON cat1.Category_id = cat.Category_id
-        WHERE c.Crime_date = %s;
-        """
-        cursor.execute(query, (search_value,))
-        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_name': row[2], 'State': row[3],'Category': row[4]} for row in cursor.fetchall()]
-
-    # Search by state
-    elif search_type == "state":
-        query = """
-        SELECT c.Crime_id, c.Crime_date, cr.Criminal_name, p.state, cat.Category_name
-        FROM Crime c
-        JOIN Commited_by cb ON c.Crime_id = cb.Crime_id
-        JOIN Criminal cr ON cb.Criminal_id = cr.Criminal_id
-        JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
-        JOIN Categorize1 cat1 ON c.Crime_id = cat1.Crime_id
-        JOIN Category cat ON cat1.Category_id = cat.Category_id
-        WHERE p.state = %s;
-        """
-        cursor.execute(query, (search_value,))
-        data = [{'Crime_id': row[0], 'Crime_date': row[1], 'Criminal_name': row[2], 'State': row[3],'Category': row[4]} for row in cursor.fetchall()]
 
     cursor.close()
     conn.close()
     return render_template("offender_info.html", data=data)
+
 
 
 
@@ -165,6 +166,38 @@ def offender_count_by_state():
     cursor.close()
     conn.close()
     return render_template("offender_count_by_state.html", data=data)
+
+
+# demo version
+@app.route('/criminal_info/<int:criminal_id>', methods=["GET"])
+def criminal_info(criminal_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT cr.Criminal_name, p.street_address, p.post_code, p.state, p.Gender
+        FROM Criminal cr
+        JOIN place_Lives_in p ON cr.Criminal_id = p.Criminal_id
+        WHERE cr.Criminal_id = %s;
+    """
+    cursor.execute(query, (criminal_id,))
+    result = cursor.fetchone()
+
+    # Criminal detail information
+    if result:
+        data = {
+            'Criminal_name': result[0],
+            'Street_address': result[1],
+            'Post_code': result[2],
+            'State': result[3],
+            'Gender': result[4]
+        }
+    else:
+        data = None
+
+    cursor.close()
+    conn.close()
+    return render_template("criminal_info.html", data=data)
+
 
 # Run the Flask app
 if __name__ == "__main__":
