@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-    body {
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Records</title>
+    <style>
+        body {
+            font-size: 15pt;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
 
-  Hello guys!
+<h2>Hello, guys! Here are the Crime Records:</h2>
+
+<table>
+    <tr>
+        <th>Crime ID</th>
+        <th>Crime Date</th>
+    </tr>
+    {% for crime in crimes %}
+    <tr>
+        <td>{{ crime.Crime_id }}</td>
+        <td>{{ crime.Crime_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
 </html>
