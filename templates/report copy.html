@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report a Crime</title>
+</head>
+<body>
+    <h1>Report a Crime</h1>
+    <form method="post" action="{{ url_for('submit_report') }}">
+        <label for="crime_date">Crime Date:</label>
+        <input type="date" id="crime_date" name="crime_date" required><br>
+
+        <label for="criminal_name">Criminal Name:</label>
+        <input type="text" id="criminal_name" name="criminal_name" required><br>
+
+        <label for="category_id">Category:</label>
+        <select id="category_id" name="category_id" required>
+            {% for category in categories %}
+            <option value="{{ category[0] }}">{{ category[1] }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" required><br>
+
+        <label for="street_address">Street Address:</label>
+        <input type="text" id="street_address" name="street_address" required><br>
+
+        <label for="post_code">Post Code:</label>
+        <input type="text" id="post_code" name="post_code" required><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br>
+
+        <label for="report_details">Report Details:</label>
+        <textarea id="report_details" name="report_details" required></textarea><br>
+
+        <button type="submit">Submit Report</button>
+    </form>
+</body>
+</html>

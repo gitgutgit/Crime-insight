@@ -12,8 +12,15 @@
     <!-- Greeting the logged-in user -->
     <h2>Hello, {{ username }}!</h2>
     
+    <!-- Insert optionj-->
+    <form action="{{ url_for('report') }}" method="get">
+        <button type="submit">Report</button>
+    </form>
+
+    
     <!-- Search Options -->
     <h2>Search Criminal Information</h2>
+    
     <form method="post" action="/criminal_info">
         <label for="search_type">Search By:</label>
         <select name="search_type" id="search_type">

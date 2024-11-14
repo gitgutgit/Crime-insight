@@ -4,7 +4,7 @@ import os
 import toml
 import psycopg2
 from flask import Flask, render_template, request,session,redirect,url_for ,flash
-
+from datetime import datetime
 # Load database configuration from secrets.toml
 config = toml.load("secrets.toml")
 DB_URL = config["database"]["DB_URL"]
@@ -20,7 +20,7 @@ def get_db_connection():
     conn = psycopg2.connect(DB_URL)
     return conn
 
-#demo
+#sign in
 @app.route('/signin', methods=["GET", "POST"])
 def signin():
     if request.method == "POST":
@@ -238,6 +238,90 @@ def criminal_detail(criminal_id):
     cursor.close()
     conn.close()
     return render_template("criminal_detail.html", data=data)
+
+
+
+# Report page
+@app.route('/report', methods=["GET"])
+def report():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    #list of Category
+    cursor.execute("SELECT Category_id, Category_name FROM Category")
+    categories = cursor.fetchall()
+
+    #list of states
+    cursor.execute("SELECT state FROM  place_Lives_in")  # 예시로 State 테이블과 컬럼명 사용
+    states = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+    return render_template("report.html", categories=categories,states=states)
+
+
+# Insert Report
+@app.route('/submit_report', methods=["POST"])
+def submit_report():
+    crime_date = request.form["crime_date"]
+    criminal_name = request.form["criminal_name"]
+    category_id = request.form["category_id"]
+    state = request.form["state"]
+    street_address = request.form["street_address"]
+    post_code = request.form["post_code"]
+    gender = request.form["gender"]
+    report_details = request.form["report_details"]
+
+    conn = psycopg2.connect(DB_URL)
+    cursor = conn.cursor()
+
+    
+    cursor.execute("SELECT MAX(Crime_id) FROM Crime")
+    max_crime_id = cursor.fetchone()[0]
+    new_crime_id = max_crime_id + 1 if max_crime_id is not None else 1000 
+
+    # Insert new Crime
+    cursor.execute("INSERT INTO Crime (Crime_id, Crime_date) VALUES (%s, %s)", (new_crime_id, crime_date))
+
+  
+    cursor.execute("SELECT MAX(Criminal_id) FROM Criminal")
+    max_criminal_id = cursor.fetchone()[0]
+    new_criminal_id = max_criminal_id + 1 if max_criminal_id is not None else 1 
+
+    # Insert Criminal
+    cursor.execute("INSERT INTO Criminal (Criminal_id, Criminal_name) VALUES (%s, %s)", (new_criminal_id, criminal_name))
+
+    # Insert commited_By
+    cursor.execute("INSERT INTO Commited_by (Crime_id, Criminal_id) VALUES (%s, %s)", (new_crime_id, new_criminal_id))
+
+
+    # Insert Categorize1 
+    cursor.execute("INSERT INTO Categorize1 (Crime_id, Category_id) VALUES (%s, %s)", (new_crime_id, category_id))
+
+    # Insert Categorize2
+    cursor.execute("INSERT INTO Categorize2 (criminal_id, category_id) VALUES (%s, %s)", (new_criminal_id, category_id))
+
+    # Insert Place_Lives_in 
+    cursor.execute("SELECT MAX(Crime_id) FROM Crime")
+    max_place_id = cursor.fetchone()[0]
+    new_place_id = max_place_id+1 if max_place_id is not None else 1 
+    cursor.execute("""
+        INSERT INTO Place_Lives_in (place_id, street_address, post_code, state, Gender, Criminal_id)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (new_place_id, street_address, post_code, state, gender, new_criminal_id))
+
+    # INSert Report
+    user_id = session.get("user_id", 1)  
+    report_date = datetime.now().date()
+    cursor.execute("""
+        INSERT INTO Report (User_id, Crime_id, Report_date, Report_details)
+        VALUES (%s, %s, %s, %s)
+    """, (user_id, new_crime_id, report_date, report_details))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("index"))
 
 
 
