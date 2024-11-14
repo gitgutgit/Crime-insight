@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Category Count</title>
+</head>
+<body>
+    <h1>Number of Crimes by Category</h1>
+    <table border="1">
+        <tr>
+            <th>Category Name</th>
+            <th>Number of Crimes</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.Category_name }}</td>
+            <td>{{ item.Number_of_Crimes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Back to Home</a>
+</body>
+</html>

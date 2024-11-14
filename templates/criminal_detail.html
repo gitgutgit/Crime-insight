@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criminal Details</title>
+</head>
+<body>
+    <h1>Criminal Details</h1>
+
+    {% if data %}
+    <p><strong>Name:</strong> {{ data.Criminal_name }}</p>
+    <p><strong>Street Address:</strong> {{ data.Street_address }}</p>
+    <p><strong>Post Code:</strong> {{ data.Post_code }}</p>
+    <p><strong>State:</strong> {{ data.State }}</p>
+    <p><strong>Gender:</strong> {{ data.Gender }}</p>
+    {% else %}
+    <p>No details available for this criminal.</p>
+    {% endif %}
+
+    <a href="/criminal_info">Back to Criminal Information</a>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criminal Information</title>
+</head>
+<body>
+    <h1>Criminal Information</h1>
+
+    <!-- Search Form -->
+    <form method="post" action="/criminal_info">
+        <label for="search_type">Search By:</label>
+        <select name="search_type" id="search_type">
+            <option value="criminal_name">Criminal Name</option>
+            <option value="crime_id">Crime ID</option>
+            <option value="specific_date">Specific Date (YYYY-MM-DD)</option>
+            <option value="state">State</option>
+            <option value="category">Category</option>
+        </select>
+        <input type="text" name="search_value" placeholder="Enter search value" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Results Table -->
+    {% if data %}
+    <h2>Search Results</h2>
+    <table border="1">
+        <tr>
+            <th>Crime ID</th>
+            <th>Crime Date</th>
+            <th>Criminal Name</th>
+            <th>State</th>
+            <th>Category</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.Crime_id }}</td>
+            <td>{{ item.Crime_date }}</td>
+            <td><a href="{{ url_for('criminal_detail', criminal_id=item.Criminal_id) }}">{{ item.Criminal_name }}</a></td>
+            <td>{{ item.State }}</td>
+            <td>{{ item.Category }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+
+    <a href="/">Back to Home</a>
+</body>
+</html>

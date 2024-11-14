@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Data Dashboard</title>
+</head>
+
+<body>
+    <h1>Crime Data Dashboard</h1>
+    
+    <!-- Greeting the logged-in user -->
+    <h2>Hello, {{ username }}!</h2>
+    
+    <!-- Search Options -->
+    <h2>Search Criminal Information</h2>
+    <form method="post" action="/criminal_info">
+        <label for="search_type">Search By:</label>
+        <select name="search_type" id="search_type">
+            <option value="criminal_name">Criminal Name</option>
+            <option value="crime_id">Crime ID</option>
+            <option value="specific_date">Specific Date (YYYY-MM-DD)</option>
+            <option value="state">State</option>
+            <option value="category">Category</option>
+        </select>
+        <input type="text" name="search_value" placeholder="Enter search value" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Links to Aggregation Pages -->
+    <h2>Data Aggregation (Statistics)</h2>
+    <ul>
+        <li><a href="/crime_category_count">View Crime Counts by Category</a></li>
+        <li><a href="/offender_count_by_state">View Offender Counts by State</a></li>
+    </ul>
+
+    <!-- Display Crime Records -->
+    <h2>Total Crime Records</h2>
+    <table border="1">
+        <tr>
+            <th>Crime ID</th>
+            <th>Crime Date</th>
+            <th>Crime Category</th>
+        </tr>
+        {% for crime in crimes %}
+        <tr>
+            <td>{{ crime.Crime_id }}</td>
+            <td>{{ crime.Crime_date }}</td>
+            <td>{{ crime.Crime_category }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

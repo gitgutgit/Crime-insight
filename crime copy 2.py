@@ -77,9 +77,9 @@ def index():
     conn.close()
     return render_template("index.html", crimes=crimes, username=session.get('username'))
 
-# Route for criminal information based on search type
-@app.route('/criminal_info', methods=["GET", "POST"])
-def criminal_info():
+# Route for offender information based on search type
+@app.route('/offender_info', methods=["GET", "POST"])
+def offender_info():
     conn = get_db_connection()
     cursor = conn.cursor()
     search_type = request.form.get("search_type")
@@ -163,7 +163,7 @@ def criminal_info():
 
     cursor.close()
     conn.close()
-    return render_template("criminal_info.html", data=data)
+    return render_template("offender_info.html", data=data)
 
 
 
@@ -209,9 +209,8 @@ def offender_count_by_state():
 
 
 # demo version
-# Route to get criminal detail information
-@app.route('/criminal_detail/<int:criminal_id>', methods=["GET"])
-def criminal_detail(criminal_id):
+@app.route('/criminal_info/<int:criminal_id>', methods=["GET"])
+def criminal_info(criminal_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = """
@@ -237,8 +236,7 @@ def criminal_detail(criminal_id):
 
     cursor.close()
     conn.close()
-    return render_template("criminal_detail.html", data=data)
-
+    return render_template("criminal_info.html", data=data)
 
 
 # Run the Flask app
