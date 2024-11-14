@@ -3,7 +3,7 @@
 import os
 import toml
 import psycopg2
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request,session,redirect,url_for ,flash
 
 # Load database configuration from secrets.toml
 config = toml.load("secrets.toml")
@@ -13,15 +13,55 @@ FOLDER_NAME = "templates"  # template folder name
 # Set up Flask application with specified template folder
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), FOLDER_NAME)
 app = Flask(__name__, template_folder=tmpl_dir)
+app.secret_key = os.urandom(24)  # Secret key for session management
 
 # Database connection function
 def get_db_connection():
     conn = psycopg2.connect(DB_URL)
     return conn
 
+#demo
+@app.route('/signin', methods=["GET", "POST"])
+def signin():
+    if request.method == "POST":
+        username = request.form.get("username")
+        useremail = request.form.get("useremail")
+        
+        if not username or not useremail:
+            flash("Username and email are required.")
+            return render_template("signin.html")
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        query = """
+            SELECT user_id, user_name, user_email FROM users
+            WHERE user_name = %s AND user_email = %s;
+        """
+        cursor.execute(query, (username, useremail))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if user:
+            # Login successful, set session and redirect to index page
+            print("Login successful for user:", user)  # Debugging output
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            return redirect(url_for('index'))
+        else:
+            # Login failed, stay on signin page with an error message
+            print("Login failed for username:", username, "and useremail:", useremail)  # Debugging output
+            flash("Invalid username or email.")
+            return render_template("signin.html")
+    
+    return render_template("signin.html")
+
 # Index route to display Crime data
 @app.route('/', methods=["GET"])
 def index():
+    if 'user_id' not in session:
+        return redirect(url_for('signin'))
+    
     conn = get_db_connection()
     cursor = conn.cursor()
     query ="""
@@ -35,7 +75,7 @@ def index():
     crimes = [{'Crime_id': row[0], 'Crime_date': row[1], 'Crime_category': row[2]} for row in rows]
     cursor.close()
     conn.close()
-    return render_template("index.html", crimes=crimes)
+    return render_template("index.html", crimes=crimes, username=session.get('username'))
 
 # Route for offender information based on search type
 @app.route('/offender_info', methods=["GET", "POST"])
