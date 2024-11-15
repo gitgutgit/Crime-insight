@@ -6,30 +6,47 @@ The work in this repository is under a restricted license until November 14th. (
 
 # Introduction
 
-.....
+The crime information displayed on this site is fictional and not related to any real persons, places, or addresses.
+
+
+To login there are three accounts.
+1. Username: Admin User / UserEmail: admin@example.com'
+
+2. Username:  John Smith / UserEmail: john.smith@example.com
+
+3. Username: Jane Doe/ UserEmail: jane.doe@example.com
+
 
 # how to execute the code
 
-pip install > requirements2.txt (for ubuntu requirements3.txt)
+ 
+ 1. Enverionment setting
 
-requirments is  for conda
+ 1.1 pip install > requirements2.txt (for ubuntu requirements3.txt)
 
-## how to test db on terminal
+"requirments" is  for conda
 
-1. start
 
-sqlite3 db.db
+1.2 create secrets.toml file
 
-2. table list
+# Option:postsql
+secrets.toml file content: 
+[database]
+DB_URL = "serverdb url"
+# Option:sqllite
+secrets2.toml file content:
+[database]
+DB_URL = "localdb url"
 
-.tables
+1.3 initial_db.py
+execute initial_db to create db (line2, secrets.toml ->for postsql(server), secrets2.toml -> for sqllite(local))
 
-3. table schema
+2. Run
 
-.schema Crime
 
-4. table data (query)
+ python3 crime.py  (to excute) # postsql version
 
-SELECT \* FROM Crime;
+ python3 crime_local.py # sqlite version
+ 
+ 127.0.0.1:8111 (local)
 
-5. .exit
