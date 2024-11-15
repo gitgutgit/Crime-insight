@@ -333,7 +333,7 @@ def crime_detail(crime_id):
     cursor.execute("""
         SELECT c.Crime_id, r.Report_date, c.Crime_Date, r.Report_details 
         FROM Crime c
-        JOIN Report r ON c.Crime_id = R.Crime_id
+        JOIN Report r ON c.Crime_id = r.Crime_id
         WHERE c.Crime_id = %s
     """, (crime_id,))
     
