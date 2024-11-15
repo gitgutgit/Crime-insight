@@ -323,7 +323,27 @@ def submit_report():
 
     return redirect(url_for("index"))
 
-
+#demo
+@app.route('/crime/<int:crime_id>', methods=["GET"])
+def crime_detail(crime_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Crime table join Report Table
+    cursor.execute("""
+        SELECT c.Crime_id, r.Report_date, c.Crime_Date, r.Report_details 
+        FROM Crime c
+        JOIN Report r ON c.Crime_id = R.Crime_id
+        WHERE c.Crime_id = %s
+    """, (crime_id,))
+    
+    crime_report_detail = cursor.fetchone()
+    
+    cursor.close()
+    conn.close()
+    
+    
+    return render_template("crime_detail.html", crime=crime_report_detail)
 
 # Run the Flask app
 if __name__ == "__main__":

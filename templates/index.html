@@ -8,7 +8,7 @@
 
 <body>
     <h1>Crime Data Dashboard</h1>
-    
+    <h2>The crime information displayed on this site is fictional and not related to any real persons, places, or addresses.</h2>
     <!-- Greeting the logged-in user -->
     <h2>Hello, {{ username }}!</h2>
     
@@ -51,7 +51,8 @@
         </tr>
         {% for crime in crimes %}
         <tr>
-            <td>{{ crime.Crime_id }}</td>
+            <td><a href="{{ url_for('crime_detail', crime_id=crime.Crime_id) }}">{{ crime.Crime_id }}</a></td>
+            <!-- <td>{{ crime.Crime_id }}</td> -->
             <td>{{ crime.Crime_date }}</td>
             <td>{{ crime.Crime_category }}</td>
         </tr>

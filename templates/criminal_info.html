@@ -35,7 +35,7 @@
         </tr>
         {% for item in data %}
         <tr>
-            <td>{{ item.Crime_id }}</td>
+            <td><a href="{{ url_for('crime_detail', crime_id=item.Crime_id) }}">{{ item.Crime_id }}</a></td>
             <td>{{ item.Crime_date }}</td>
             <td><a href="{{ url_for('criminal_detail', criminal_id=item.Criminal_id) }}">{{ item.Criminal_name }}</a></td>
             <td>{{ item.State }}</td>

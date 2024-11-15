@@ -66,7 +66,7 @@ def reset_database():
         """,
         """
         CREATE TABLE IF NOT EXISTS Place_Lives_in (
-            Place_id SERIAL PRIMARY KEY,
+            place_id SERIAL PRIMARY KEY,
             Street_address TEXT NOT NULL,
             Post_code INTEGER NOT NULL,
             State TEXT NOT NULL,
@@ -103,6 +103,6 @@ def reset_database():
     conn.close()
     print("All tables dropped, recreated successfully, and Crime_id sequence set to start at 1000.")
 
-# 함수 실행
+# excute function
 if __name__ == "__main__":
     reset_database()
